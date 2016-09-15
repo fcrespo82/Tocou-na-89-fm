@@ -17,6 +17,8 @@ import javafx.scene.image.Image;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -30,9 +32,32 @@ public class Tocouna89fm {
     @FXML
     private ListView<RadioRockModel> listaMusicas;
 
+    Timer t;
+
     @FXML
     void getMusic(ActionEvent event) throws IOException {
 
+        if ("Pegar Musica".equals(button.getText())) {
+            button.setText("Parar de pegar música");
+            t = new Timer();
+            t.schedule(
+                    new TimerTask() {
+
+                        @Override
+                        public void run() {
+                            carregaLista();
+                            System.out.println("ping");
+                        }
+                    }, 0, 5000);
+        } else {
+            button.setText("Pegar música");
+            t.cancel();
+        }
+
+    }
+
+
+    private void carregaLista() {
         Task carregaMusica = new Task<RadioRockModel>() {
 
             @Override
@@ -89,6 +114,7 @@ public class Tocouna89fm {
             protected void updateItem(RadioRockModel model, boolean empty) {
                 super.updateItem(model, empty);
                 if (empty) {
+                    setText(null);
                     setGraphic(null);
                 } else {
 
