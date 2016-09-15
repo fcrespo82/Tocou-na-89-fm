@@ -118,10 +118,6 @@ public class Tocouna89fm {
                 }
             }
         });
-
-
-        //listaMusicas.setCellFactory(ComboBoxListCell.forListView(musicas));
-
     }
 
 }
