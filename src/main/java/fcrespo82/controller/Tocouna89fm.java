@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fcrespo82.model.RadioRockModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.cell.ComboBoxListCell;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.util.StringConverter;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,32 +28,97 @@ public class Tocouna89fm {
     private Button button;
 
     @FXML
-    private ListView<String> listaMusicas;
-
+    private ListView<RadioRockModel> listaMusicas;
 
     @FXML
     void getMusic(ActionEvent event) throws IOException {
 
-        button.setText("Clicado");
+        Task carregaMusica = new Task<RadioRockModel>() {
 
-        URL url = new URL("http://players.gc2.com.br/cron/89fm/results.json");
+            @Override
+            protected RadioRockModel call() throws Exception {
+                URL url = new URL("http://players.gc2.com.br/cron/89fm/results.json");
 
-        String json = new Scanner(url.openStream()).useDelimiter("\\Z").next();
+                String json = new Scanner(url.openStream()).useDelimiter("\\Z").next();
 
-        System.out.println(json);
+                RadioRockModel playing = new ObjectMapper().readValue(url.openStream(), RadioRockModel.class);
 
-        RadioRockModel playing = new ObjectMapper().readValue(url.openStream(), RadioRockModel.class);
+                return playing;
+            }
 
-        System.out.println(playing);
+            @Override
+            protected void succeeded() {
+                RadioRockModel playing = getValue();
 
-        ObservableList musicas = listaMusicas.getItems();
-        if (musicas == null) {
-            musicas = FXCollections.observableArrayList();
-        }
+                ObservableList<RadioRockModel> musicas = listaMusicas.getItems();
+                if (musicas == null) {
+                    musicas = FXCollections.observableArrayList();
+                }
 
-        musicas.add(playing.getMusicas().get(0).getTocando().get(0).getSong());
+                //!"A RÁDIO ROCK".equals(playing.getCantor()) &&
+                if (!musicas.contains(playing)) {
 
-        listaMusicas.setItems(musicas);
+                    musicas.add(playing);
+                    listaMusicas.setItems(musicas);
+
+                    System.out.println(playing);
+                }
+            }
+        };
+        Thread t = new Thread(carregaMusica);
+        t.setDaemon(true);
+        t.start();
+
+
+        listaMusicas.setCellFactory(lv -> new ListCell<RadioRockModel>() {
+            private Node graphic;
+            private MusicCellController controller;
+
+            {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/musicCell.fxml"));
+                    graphic = loader.load();
+                    controller = loader.getController();
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
+            }
+
+
+            @Override
+            protected void updateItem(RadioRockModel model, boolean empty) {
+                super.updateItem(model, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+
+                    controller.getSinger().setText(model.getCantor());
+                    controller.getMusic().setText(model.getMusica());
+                    //controller.getImage().setImage(new Image(model.getCoverURL().toExternalForm()));
+
+                    Task carregaImagem = new Task<Image>() {
+
+                        @Override
+                        protected Image call() throws Exception {
+                            return new Image(model.getCoverURL().toExternalForm());
+                        }
+
+                        @Override
+                        protected void succeeded() {
+                            Image imagem = getValue();
+
+                            controller.getImage().setImage(imagem);
+                        }
+                    };
+                    Thread t = new Thread(carregaImagem);
+                    t.setDaemon(true);
+                    t.start();
+
+                    setGraphic(graphic);
+                }
+            }
+        });
+
 
         //listaMusicas.setCellFactory(ComboBoxListCell.forListView(musicas));
 
