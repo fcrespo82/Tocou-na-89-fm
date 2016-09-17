@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +25,7 @@ import java.util.TimerTask;
 /**
  * Created by fxcrespo on 14/09/16.
  */
+@Log
 public class Tocouna89fm {
 
     @FXML
@@ -32,30 +34,32 @@ public class Tocouna89fm {
     @FXML
     private ListView<RadioRockModel> listaMusicas;
 
-    Timer t;
+    Timer timer;
+
+    Boolean pegandoMusicas = false;
 
     @FXML
     void getMusic(ActionEvent event) throws IOException {
 
-        if ("Pegar Musica".equals(button.getText())) {
+        if (!pegandoMusicas) {
+            pegandoMusicas = true;
             button.setText("Parar de pegar música");
-            t = new Timer();
-            t.schedule(
+            timer = new Timer();
+            timer.schedule(
                     new TimerTask() {
 
                         @Override
                         public void run() {
                             carregaLista();
-                            System.out.println("ping");
+                            log.info("ping");
                         }
-                    }, 0, 5000);
+                    }, 0, 1*1000); // 2 minutos
         } else {
             button.setText("Pegar música");
-            t.cancel();
+            timer.cancel();
         }
 
     }
-
 
     private void carregaLista() {
         Task carregaMusica = new Task<RadioRockModel>() {
@@ -80,14 +84,14 @@ public class Tocouna89fm {
                     musicas = FXCollections.observableArrayList();
                 }
 
-                //!"A RÁDIO ROCK".equals(playing.getCantor()) &&
-                if (!musicas.contains(playing)) {
+                if (!"A RÁDIO ROCK".equals(playing.getCantor()) &&!musicas.contains(playing)) {
 
                     musicas.add(playing);
                     listaMusicas.setItems(musicas);
 
-                    System.out.println(playing);
+
                 }
+                log.info(playing.toString());
             }
         };
         Thread t = new Thread(carregaMusica);
