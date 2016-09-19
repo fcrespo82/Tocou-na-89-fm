@@ -2,12 +2,10 @@ package fcrespo82.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.java.Log;
 
+import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -20,14 +18,25 @@ import java.util.Map;
 @Setter
 @ToString(includeFieldNames = true)
 @Log
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"id", "coverURL"})
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class RadioRockModel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
+    private Long id;
+
+    @Column
     private String cantor;
 
+    @Column
     private String musica;
 
+    @Column
     private URL coverURL;
 
     @JsonProperty("musicas")
