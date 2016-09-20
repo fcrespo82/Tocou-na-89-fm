@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Blend?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,49 +12,56 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fcrespo82.controller.MusicCellController">
-   <children>
-      <ImageView fx:id="image" fitHeight="300.0" fitWidth="300.0" layoutX="200.0" layoutY="118.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <image>
-            <Image url="@../../../../../Downloads/3a1d02a3a6dc42589e1f05bd8e73dd0d.png" />
-         </image></ImageView>
-      <Rectangle height="49.0" opacity="0.72" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0">
+    <children>
+        <ImageView fx:id="image" fitHeight="300.0" fitWidth="300.0" layoutX="200.0" layoutY="118.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <image>
+                <Image url="@../../../../../Downloads/3a1d02a3a6dc42589e1f05bd8e73dd0d.png" />
+            </image>
+        </ImageView>
+        <Rectangle height="49.0" opacity="0.72" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0">
+            <effect>
+                <Blend mode="MULTIPLY" />
+            </effect>
+            <fill>
+                <LinearGradient endX="1.0" endY="1.0" startX="1.0">
+                    <stops>
+                        <Stop color="#ffffff99" />
+                        <Stop color="#ffffff99" offset="0.6666666666666669" />
+                        <Stop color="#b21a1a00" offset="1.0" />
+                    </stops>
+                </LinearGradient>
+            </fill>
+        </Rectangle>
+        <Rectangle height="49.0" layoutY="252.0" opacity="0.72" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0">
+            <effect>
+                <Blend mode="MULTIPLY" />
+            </effect>
+            <fill>
+                <LinearGradient endX="1.0" endY="1.0" startX="1.0">
+                    <stops>
+                        <Stop color="#ffffff00" />
+                        <Stop color="#ffffff00" offset="0.0962962962962963" />
+                        <Stop color="#ffffff99" offset="0.3740740740740743" />
+                        <Stop color="#ffffff99" offset="1.0" />
+                    </stops>
+                </LinearGradient>
+            </fill>
+        </Rectangle>
+        <Label fx:id="singer" layoutX="14.0" layoutY="9.0" text="XYZ" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="9.0">
+            <font>
+                <Font size="18.0" />
+            </font>
          <effect>
-            <Blend mode="MULTIPLY" />
+            <DropShadow />
          </effect>
-         <fill>
-            <LinearGradient endX="1.0" endY="1.0" startX="1.0">
-               <stops>
-                  <Stop color="#ffffff99" />
-                  <Stop color="#ffffff99" offset="0.6666666666666669" />
-                  <Stop color="#b21a1a00" offset="1.0" />
-               </stops>
-            </LinearGradient>
-         </fill>
-      </Rectangle>
-      <Rectangle height="49.0" layoutY="252.0" opacity="0.72" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0">
+        </Label>
+        <Label fx:id="music" layoutX="245.0" layoutY="274.0" text="The reckoning" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="14.0">
+            <font>
+                <Font size="15.0" />
+            </font>
          <effect>
-            <Blend mode="MULTIPLY" />
+            <DropShadow />
          </effect>
-         <fill>
-            <LinearGradient endX="1.0" endY="1.0" startX="1.0">
-               <stops>
-                  <Stop color="#ffffff00" />
-                  <Stop color="#ffffff00" offset="0.0962962962962963" />
-                  <Stop color="#ffffff99" offset="0.3740740740740743" />
-                  <Stop color="#ffffff99" offset="1.0" />
-               </stops>
-            </LinearGradient>
-         </fill>
-      </Rectangle>
-      <Label fx:id="singer" layoutX="14.0" layoutY="9.0" text="XYZ" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="9.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="music" layoutX="245.0" layoutY="274.0" text="The reckoning" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="14.0">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-   </children>
+        </Label>
+    </children>
 </AnchorPane>

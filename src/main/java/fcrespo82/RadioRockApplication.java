@@ -17,6 +17,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by fxcrespo on 14/09/16.
  */
@@ -28,14 +33,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class RadioRockApplication extends Application {
 
-    static String[] savedArgs;
+    static List<String> savedArgs;
 
     private ConfigurableApplicationContext applicationContext;
 
     @Override
     public void init() throws Exception {
         super.init();
-        applicationContext = SpringApplication.run(RadioRockApplication.class, savedArgs);
+        applicationContext = SpringApplication.run(RadioRockApplication.class, (String[])savedArgs.toArray());
         applicationContext.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
@@ -44,9 +49,16 @@ public class RadioRockApplication extends Application {
         super.stop();
         applicationContext.stop();
     }
+
     public static void main(String[] args) {
-        savedArgs = args;
-        launch(args);
+        savedArgs = Arrays.asList(args);
+
+        if (savedArgs.contains("--gui")) {
+            launch(args);
+        } else {
+            SpringApplication.run(RadioRockApplication.class, args);
+        }
+
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -65,5 +77,6 @@ public class RadioRockApplication extends Application {
                 Platform.exit();
                 System.exit(0);
             }
-        });    }
+        });
+    }
 }

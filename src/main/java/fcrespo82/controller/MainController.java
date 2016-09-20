@@ -2,7 +2,8 @@ package fcrespo82.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fcrespo82.model.RadioRockModel;
-import fcrespo82.repository.RadioRockRepository;
+import fcrespo82.service.RadioRockService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -35,8 +38,11 @@ public class MainController {
     @FXML
     private ListView<RadioRockModel> listaMusicas;
 
+    @FXML
+    private TextField nowPlaying;
+
     @Autowired
-    RadioRockRepository repository;
+    RadioRockService service;
 
     Timer timer;
 
@@ -44,9 +50,11 @@ public class MainController {
 
     @FXML
     public void initialize() {
+
         listaMusicas.setCellFactory(lv -> new ListCell<RadioRockModel>() {
             private Node graphic;
             private MusicCellController controller;
+
             {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/musicCell.fxml"));
@@ -59,35 +67,37 @@ public class MainController {
 
             @Override
             protected void updateItem(RadioRockModel model, boolean empty) {
+
                 super.updateItem(model, empty);
                 if (empty) {
                     setText(null);
                     setGraphic(null);
                 } else {
+                    Platform.runLater(() -> {
 
-                    controller.getSinger().setText(model.getCantor());
-                    controller.getMusic().setText(model.getMusica());
-                    //controller.getImage().setImage(new Image(model.getCoverURL().toExternalForm()));
+                        controller.getSinger().setText(model.getCantor());
+                        controller.getMusic().setText(model.getMusica());
+                        //controller.getImage().setImage(new Image(model.getCoverURL().toExternalForm()));
 
-                    Task carregaImagem = new Task<Image>() {
+                        Task carregaImagem = new Task<Image>() {
+                            @Override
+                            protected Image call() throws Exception {
+                                return new Image(model.getCoverURL().toExternalForm());
+                            }
 
-                        @Override
-                        protected Image call() throws Exception {
-                            return new Image(model.getCoverURL().toExternalForm());
-                        }
+                            @Override
+                            protected void succeeded() {
+                                Image imagem = getValue();
 
-                        @Override
-                        protected void succeeded() {
-                            Image imagem = getValue();
+                                controller.getImage().setImage(imagem);
+                            }
+                        };
+                        Thread t = new Thread(carregaImagem);
+                        t.setDaemon(true);
+                        t.start();
 
-                            controller.getImage().setImage(imagem);
-                        }
-                    };
-                    Thread t = new Thread(carregaImagem);
-                    t.setDaemon(true);
-                    t.start();
-
-                    setGraphic(graphic);
+                        setGraphic(graphic);
+                    });
                 }
             }
         });
@@ -102,15 +112,13 @@ public class MainController {
             timer = new Timer();
             timer.schedule(
                     new TimerTask() {
-
                         @Override
                         public void run() {
-                            try {
-                                downloadSong();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            log.info("ping");
+
+                            RadioRockModel song = service.downloadSong();
+                            atualizarLista(null);
+                            nowPlaying.setText(song.musicaECantor());
+
                         }
                     }, 0, 10 * 1000); // 2 minutos
         } else {
@@ -126,13 +134,15 @@ public class MainController {
         String json = new Scanner(url.openStream()).useDelimiter("\\Z").next();
 
         RadioRockModel playing = new ObjectMapper().readValue(url.openStream(), RadioRockModel.class);
+        playing.setDataTocada(LocalDateTime.now());
 
-        List<RadioRockModel> found = repository.findAll();
+        List<RadioRockModel> found = service.findAll();
 
-        //if (found != null && !found.contains(playing)){// && !"A RÁDIO ROCK".equals(playing.getCantor())) {
-            repository.save(playing);
-            atualizarLista(null);
-        //}
+        if (found != null && !found.contains(playing) && !"A RÁDIO ROCK".equals(playing.getCantor())) {
+            service.save(playing);
+        }
+        atualizarLista(null);
+        nowPlaying.setText(playing.musicaECantor());
 
     }
 
@@ -146,12 +156,23 @@ public class MainController {
 
         List<RadioRockModel> list = new ArrayList<>();
 
-        repository.findAll().forEach(list::add);
+        service.findAll().forEach(list::add);
+
+        Collections.reverse(list);
 
         musicas.setAll(list);
 
-        listaMusicas.setItems(musicas);
+    }
 
+    @FXML
+    public void dedupe(ActionEvent event) {
+
+        Set<RadioRockModel> tempSet = new HashSet<RadioRockModel>();
+        for (RadioRockModel t : service.findAll()) {
+            if (!tempSet.add(t)) {
+                service.delete(t.getId());
+            }
+        }
     }
 
 }

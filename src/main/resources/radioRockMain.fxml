@@ -2,17 +2,15 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="fcrespo82.controller.MainController">
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fcrespo82.controller.MainController">
     <children>
-        <ListView fx:id="listaMusicas" orientation="HORIZONTAL" prefHeight="353.0" prefWidth="585.0"
-                  AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0"
-                  AnchorPane.topAnchor="15.0"/>
-        <Button fx:id="button" layoutX="481.0" layoutY="360.0" mnemonicParsing="false" onAction="#getMusic"
-                text="Pegar Musica" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
-        <Button fx:id="button1" layoutX="14.0" layoutY="359.0" mnemonicParsing="false" onAction="#atualizarLista"
-                text="Atualizar lista" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0"/>
+        <ListView fx:id="listaMusicas" orientation="HORIZONTAL" prefHeight="394.0" prefWidth="572.0" AnchorPane.bottomAnchor="51.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        <Button fx:id="button1" layoutX="14.0" layoutY="419.0" minWidth="130.0" mnemonicParsing="false" onAction="#atualizarLista" text="Atualizar lista" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+      <Button layoutX="144.0" layoutY="419.0" minWidth="100.0" mnemonicParsing="false" onAction="#dedupe" text="Dedupe" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="158.0" />
+      <TextField fx:id="nowPlaying" editable="false" layoutX="271.0" layoutY="419.0" minWidth="100.0" prefHeight="26.0" prefWidth="100.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="271.0" AnchorPane.rightAnchor="229.0" />
+        <Button fx:id="button" layoutX="436.0" layoutY="419.0" minWidth="150.0" mnemonicParsing="false" onAction="#getMusic" prefHeight="26.0" prefWidth="202.0" text="Pegar Musica" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
     </children>
 </AnchorPane>

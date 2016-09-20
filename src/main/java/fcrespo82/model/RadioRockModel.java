@@ -8,6 +8,7 @@ import lombok.extern.java.Log;
 import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +17,14 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ToString(includeFieldNames = true)
+@ToString
 @Log
-@EqualsAndHashCode(exclude = {"id", "coverURL"})
+@EqualsAndHashCode(of = {"cantor", "musica"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class RadioRockModel {
+public class RadioRockModel implements Comparable<RadioRockModel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,6 +40,9 @@ public class RadioRockModel {
     @Column
     private URL coverURL;
 
+    @Column
+    private LocalDateTime dataTocada;
+
     @JsonProperty("musicas")
     public void setMusicas(List<Map<String, Object>> musicas) {
         List<Map<String, String>> tocando = (List<Map<String, String>>) musicas.get(0).get("tocando");
@@ -52,4 +56,13 @@ public class RadioRockModel {
         }
     }
 
+    public String musicaECantor() {
+        return this.getCantor() + " - " + this.getMusica();
+    }
+
+
+    @Override
+    public int compareTo(RadioRockModel o) {
+        return this.getId().compareTo(o.getId());
+    }
 }
