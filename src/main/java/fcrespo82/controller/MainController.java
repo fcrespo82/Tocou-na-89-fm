@@ -123,6 +123,7 @@ public class MainController {
                     }, 0, 10 * 1000); // 2 minutos
         } else {
             button.setText("Pegar música");
+            pegandoMusicas = false;
             timer.cancel();
         }
 

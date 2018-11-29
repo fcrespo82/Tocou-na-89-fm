@@ -53,11 +53,11 @@ public class RadioRockApplication extends Application {
     public static void main(String[] args) {
         savedArgs = Arrays.asList(args);
 
-        if (savedArgs.contains("--gui")) {
+        // if (savedArgs.contains("--gui")) {
             launch(args);
-        } else {
-            SpringApplication.run(RadioRockApplication.class, args);
-        }
+        // } else {
+        //     SpringApplication.run(RadioRockApplication.class, args);
+        // }
 
     }
 

@@ -44,13 +44,12 @@ public class RadioRockModel implements Comparable<RadioRockModel> {
     private LocalDateTime dataTocada;
 
     @JsonProperty("musicas")
-    public void setMusicas(List<Map<String, Object>> musicas) {
-        List<Map<String, String>> tocando = (List<Map<String, String>>) musicas.get(0).get("tocando");
-        Map<String, String> firstResult = tocando.get(0);
-        cantor = firstResult.get("singer");
-        musica = firstResult.get("song");
+    public void setMusicas(Map<String, Object> musicas) {
+        Map<String, String> tocando = (Map<String, String>) musicas.get("tocando");
+        cantor = tocando.get("singer");
+        musica = tocando.get("song");
         try {
-            coverURL = new URL(firstResult.get("covermega"));
+            coverURL = new URL(tocando.get("cover"));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

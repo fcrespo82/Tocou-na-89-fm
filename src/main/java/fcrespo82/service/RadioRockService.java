@@ -29,9 +29,7 @@ public class RadioRockService {
 
             URL url = new URL(DONWLOAD_URL);
 
-            String json = new Scanner(url.openStream()).useDelimiter("\\Z").next();
-
-            RadioRockModel playing = new ObjectMapper().readValue(url.openStream(), RadioRockModel.class);
+            RadioRockModel playing = new ObjectMapper().readValue(url, RadioRockModel.class);
             playing.setDataTocada(LocalDateTime.now());
 
             List<RadioRockModel> found = repository.findAll();
